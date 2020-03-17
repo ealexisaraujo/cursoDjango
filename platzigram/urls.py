@@ -1,10 +1,9 @@
 
 from django.urls import path
-from django.http import HttpResponse
+from platzigram import views
 
-def hello_world(request):
-  return HttpResponse("Hello, world. You're at the polls index.")
 
 urlpatterns = [
-    path('hello-world/', hello_world),
+    path('hello-world/', views.hello_world),
+    path('hi/', views.hi),
 ]
