@@ -24,15 +24,13 @@ def update_profile(request):
         form = ProfileForm(request.POST, request.FILES)
         if form.is_valid():
             data = form.cleaned_data
-
             profile.website = data['website']
             profile.phone_number = data['phone_number']
             profile.biography = data['biography']
-            profile.picture = data['picture']
+            if data['picture']:
+                profile.picture = data['picture']
             profile.save()
-
-            return redirect('update_profile')
-
+            redirect('update_profile')
     else:
         form = ProfileForm()
 
