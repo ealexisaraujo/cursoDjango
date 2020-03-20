@@ -1,4 +1,4 @@
-# README.MD
+# Platzigram
 
 Making attractive and usable readme's.
 This is a short description about the content of my proyect. This text have to be simple and explicit.
@@ -26,7 +26,15 @@ Markdown has enumation and nested lists.
 To install and run this proyect just type and execute
 
 ```bash
-npm install
+python3 -m venv .env
+source .env/bin/activate
+pip install -r requirements.txt
+```
+
+```bash
+python manage.py makemigrations
+python manage.py migrate
+python manage.py runserver
 ```
 
 ## Preview
