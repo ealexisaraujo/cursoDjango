@@ -4,6 +4,7 @@
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.mixins import LoginRequiredMixin
+from django.contrib.auth import views as auth_views
 from django.shortcuts import render, redirect
 from django.urls import reverse, reverse_lazy
 from django.views.generic import DetailView, FormView, UpdateView
@@ -65,23 +66,26 @@ class UpdateProfileView(LoginRequiredMixin, UpdateView):
         return reverse('users:detail', kwargs={'username': username})
 
 
-def login_view(request):
+class LoginView(auth_views.LoginView):
     """Login view."""
-    if request.method == 'POST':
-        username = request.POST['username']
-        password = request.POST['password']
-        user = authenticate(request, username=username, password=password)
-        if user:
-            login(request, user)
+
+    template_name = 'users/login.html'
+
+    def get_form(self, form_class=None):
+        form = super().get_form(form_class)
+        form.fields['username'].widget.attrs.update({
+            'class': 'form-control'})
+        form.fields['password'].widget.attrs.update({
+            'class': 'form-control'})
+        return form
+
+    def get(self, request, *args, **kwargs):
+        """Handle GET requests: instantiate a blank version of the form."""
+        if request.user.is_authenticated:
             return redirect('posts:feed')
-        else:
-            return render(request, 'users/login.html', {'error': 'Invalid username and password'})
-
-    return render(request, 'users/login.html')
+        return super().get(request, args, kwargs)
 
 
-@login_required
-def logout_view(request):
-    """Logout a user."""
-    logout(request)
-    return redirect('users:login')
+class LogoutView(LoginRequiredMixin, auth_views.LogoutView):
+    """Logout view."""
+    pass
